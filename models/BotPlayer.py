@@ -9,11 +9,15 @@ class BotPlayer(Player):
 
     def select_what_play(self, field_card, table_color):
         print("Field card is: " + str(field_card))
+        print("Your hand is: \n" + self.show_hand())
+        count = 0
         for card in self.hand:
             current_card = self.card_logic(card, field_card, table_color)
             if current_card:
                 print("Card to play is: " + str(card))
+                del self.hand[count]
                 return card
+            count += 1
         return None
 
     def card_logic(self, my_card, field_card, table_color):
