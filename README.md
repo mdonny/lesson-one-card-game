@@ -28,4 +28,4 @@ Una volta create le carte andremo ad inizializzare il mazzo di 108 carte nel mai
 
 ## Obiettivo extra
 
-Creare una classe Tavolo che abbia una proprietà mazzo e che questo sia inizializzato con le carte necessarie alla creazione della classe.
+Creare una classe Tavolo che abbia una proprietà mazzo e che questo sia inizializzato nel costruttore con tutte le carte del gioco.
