@@ -15,19 +15,25 @@ class Game:
         self.player_numbers = players_number
         self.bot_numbers = bot_numbers
         self.table = Table()
+        print("Game launched")
 
+    # Metodo che genera i players
     def generate_player(self):
         pass
 
+    # Metodo che inizializza le carte per ogni player
     def initialize_players_cards(self):
         pass
 
+    # Metodo che aggiunge un player alla partita
     def add_player(self, player):
         pass
 
+    # Metodo che pesca una carta e la aggiunge alla mano del giocatore
     def player_draw_card(self, player):
         pass
 
+    # Metodo che implementa il motore del gioco
     def play_game(self):
         finish = False
         winner = ""
@@ -35,6 +41,7 @@ class Game:
             pass
         print("The player winner is: " + winner)
 
+    # Metodo che implementa il turno di gioco
     def play_turn(self, player, next_player):
         pass
 
