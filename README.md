@@ -1,4 +1,4 @@
-# Introduzione
+# Lezione 2
 
 Questa è la seconda parte di programma python di esempio che implementa il gioco di carte Uno https://it.wikipedia.org/wiki/UNO_(gioco_di_carte)
 
@@ -21,7 +21,7 @@ In questa seconda lezione si andranno ad implementare le classi per le logiche d
 - Classe Player
 - Classe Game
 
-Implementare i metodi all'interno di ogni classe con le funzionalità richieste.
+Implementare i metodi all'interno di ogni classe con le funzionalità richieste (vedi i commenti impostati)
 
 ## Obiettivo extra
 
