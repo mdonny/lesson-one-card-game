@@ -4,18 +4,22 @@ class Player:
         self.name = name
         self.hand = []
 
-    # Metodo che aggiunge una carta alla mano del giocatore
     def add_card(self, card):
-        pass
+        self.hand.append(card)
 
-    # Metodo che stampa il numero di carte nella mano del giocatore
     def get_hand_card_number(self):
         return len(self.hand)
 
-    # Metodo che stampa la mano del giocatore
     def show_hand(self):
-        pass
+        count = 0
+        cards = ""
+        for x in self.hand:
+            cards += str(count) + " - " + str(x) + "\n"
+            count += 1
+        return cards
 
-    # Metodo che permette al giocatore di giocare una carta dopo averla scelta
     def play_card(self, index):
-        pass
+        if index > len(self.hand):
+            print("Error select card, retry")
+            self.play_card()
+        return self.hand.pop(index)
