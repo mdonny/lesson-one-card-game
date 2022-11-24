@@ -61,9 +61,13 @@ class Game:
     # Metodo che sceglie la carta d agiocare
     def choose_play(self):
         print("Select your action: 0-n - Play Card, d - Draw card")
-        action = input()
-        print("Your selected action is: " + action)
-        if (action.isnumeric() and int(action) < 0) or (not action.isnumeric() and action != "d"):
-            print("Bad selection, retry")
-            self.choose_play()
+        valid_action = False
+        while not valid_action:
+            action = input()
+            print("Your selected action is: " + action)
+            if (action.isnumeric() and int(action) > 0) or (not action.isnumeric() and action == "d"):
+                valid_action = True
+            else:
+                print("Bad selection, retry")
         return action
+
