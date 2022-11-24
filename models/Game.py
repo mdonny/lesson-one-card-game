@@ -65,7 +65,7 @@ class Game:
         while not valid_action:
             action = input()
             print("Your selected action is: " + action)
-            if (action.isnumeric() and int(action) > 0) or (not action.isnumeric() and action == "d"):
+            if (action.isnumeric() and int(action) >= 0) or (not action.isnumeric() and action == "d"):
                 valid_action = True
             else:
                 print("Bad selection, retry")
