@@ -1,6 +1,7 @@
 from models.Player import Player
 from models.SpecialCard import SpecialCard
 from models.Table import Table
+from models.Rules import Rules
 from models.ChangeLap import ChangeLap
 from models.ProhibitionCard import ProhibitionCard
 import random
@@ -15,8 +16,12 @@ class Game:
         self.player_numbers = players_number
         self.bot_numbers = bot_numbers
         self.table = Table()
+        self.table.generate_cards()
+        self.table.shuffle()
         card = self.table.draw()
         self.table.play_card(card)
+        if isinstance(card, SpecialCard):
+            Rules.select_random_color(self.table)
         print("Game launched")
 
     # Metodo che genera i players
@@ -50,8 +55,27 @@ class Game:
     def play_game(self):
         finish = False
         winner = ""
+        count = 0
         while not self.table.check_deck_is_empty() and not finish:
-            pass
+            if len(self.table.played_cards) > 0:
+                if isinstance(self.table.show_last_played_card(), ChangeLap):
+                    self.players.reverse()
+                if isinstance(self.table.show_last_played_card(), ProhibitionCard):
+                    count += 1
+            if count < self.player_numbers:
+                player = self.players[count]
+                if count == self.player_numbers - 1:
+                    next_player = self.players[0]
+                else:
+                    next_player = self.players[count + 1]
+                print("Player %s is tour turn" % player.name)
+                self.play_turn(player, next_player)
+                if player.get_hand_card_number() <= 0:
+                    finish = True
+                    winner = player.name
+                count += 1
+            else:
+                count = 0
         print("The player winner is: " + winner)
 
     # Metodo che implementa il turno di gioco
