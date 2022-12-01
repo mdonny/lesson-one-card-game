@@ -12,7 +12,8 @@ class BotPlayer(Player):
         pass
 
     # Metodo che una volta che decido di giocare una carta
-    # Fa scegliere quale carta giocare
+    # Fa scegliere quale carta giocare secondo una logica che decido
+    # a priori
     def card_logic(self, my_card, field_card, table_color):
         pass
 
