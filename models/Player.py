@@ -19,7 +19,7 @@ class Player:
         return cards
 
     def play_card(self, index):
-        if index > len(self.hand):
+        if index > len(self.hand) -1:
             print("Error select card, retry")
             self.play_card()
         return self.hand.pop(index)
