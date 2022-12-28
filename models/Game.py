@@ -1,14 +1,15 @@
+from models.BotPlayer import BotPlayer
 from models.Player import Player
 from models.SpecialCard import SpecialCard
 from models.Table import Table
-from models.Rules import Rules
 from models.ChangeLap import ChangeLap
 from models.ProhibitionCard import ProhibitionCard
+from models.Rules import Rules
 import random
 
 
 class Game:
-    first_names = ('John', 'Andy', 'Joe')
+    first_names = ('John', 'Andy', 'Joe', 'Marty', 'Abraham')
     last_names = ('Johnson', 'Smith', 'Williams')
 
     def __init__(self, players_number, bot_numbers):
@@ -18,8 +19,8 @@ class Game:
         self.table = Table()
         self.table.generate_cards()
         self.table.shuffle()
+        print("Deck size before dispatch cards: %d" % (len(self.table.deck)))
         card = self.table.draw()
-        self.table.play_card(card)
         self.table.play_card(card)
         if isinstance(card, SpecialCard):
             Rules.select_random_color(self.table)
@@ -29,37 +30,38 @@ class Game:
             print("Player %s have %d cards" % (player.name, player.get_hand_card_number()))
         self.play_game()
 
-    # Metodo che genera i players
     def generate_player(self):
-        for x in range(self.player_numbers):
+        how_many_human = self.player_numbers - self.bot_numbers
+        for x in range(how_many_human):
             print("Insert payer name")
             player_name = input()
             print("Player name is: %s" % player_name)
             current_player = Player(player_name)
-            self.add_player(current_player)
+            self.players.append(current_player)
+        for x in range(self.bot_numbers):
+            bot_name = random.choice(self.first_names) + " " + random.choice(self.last_names)
+            print("Generate Bot payer with name: " + bot_name)
+            current_player = BotPlayer(bot_name)
+            self.players.append(current_player)
         self.initialize_players_cards()
 
-    #    Metodo che inizializza le carte dei giocatori
     def initialize_players_cards(self):
         for player in self.players:
             for x in range(7):
                 card = self.table.draw()
                 player.add_card(card)
 
-    #    Metodo che aggiunge un giocatore
     def add_player(self, player):
         self.players.append(player)
 
-    #    Metodo che gioca una carta
     def player_draw_card(self, player):
         card = self.table.draw()
         player.add_card(card)
 
-    # Metodo che implementa il motore del gioco
     def play_game(self):
+        count = 0
         finish = False
         winner = ""
-        count = 0
         while not self.table.check_deck_is_empty() and not finish:
             if len(self.table.played_cards) > 0:
                 if isinstance(self.table.show_last_played_card(), ChangeLap):
@@ -72,7 +74,7 @@ class Game:
                     next_player = self.players[0]
                 else:
                     next_player = self.players[count + 1]
-                print("Player %s is tour turn" % player.name)
+                print("Player %s is your turn" % player.name)
                 self.play_turn(player, next_player)
                 if player.get_hand_card_number() <= 0:
                     finish = True
@@ -80,30 +82,43 @@ class Game:
                 count += 1
             else:
                 count = 0
-        print("The player winner is: " + winner)
+        print("The winner is: " + winner)
 
-    # Metodo che implementa il turno di gioco
     def play_turn(self, player, next_player):
-        print("Last played card is: " + str(
-            self.table.show_last_played_card()) + " and current color: " + str(self.table.current_color or ''))
-        print("Your hand is: \n" + player.show_hand())
-        action = self.choose_play()
-        if action.isnumeric():
-            card = player.play_card(int(action))
-            print("Player play card: " + str(card))
-            if Rules.validate_card(card, self.table.show_last_played_card(), self.table.current_color):
-                print("Card is valid!")
-                self.table.play_card(card)
-                Rules.activate_card_rules(card, player, next_player, self.table)
+        if isinstance(player, BotPlayer):
+            card = player.select_what_play(self.table.show_last_played_card(), self.table.current_color)
+            if card is None:
+                player.add_card(self.table.draw())
             else:
-                print("Card played is wrong, retry!")
-                player.add_card(card)
-                self.play_turn(player, next_player)
+                self.table.play_card(card)
+                if Rules.validate_card(card, self.table.show_last_played_card(), self.table.current_color):
+                    print("Card is valid!")
+                    self.table.play_card(card)
+                    Rules.activate_card_rules(card, player, next_player, self.table)
+                else:
+                    print("Card played is wrong, retry!")
+                    player.add_card(card)
+                    self.play_turn(player, next_player)
         else:
-            print("Player draw a card!")
-            player.add_card(self.table.draw())
+            print("Last played card is: " + str(
+                self.table.show_last_played_card()) + " and current color: " + str(self.table.current_color or ''))
+            print("Your hand is: \n" + player.show_hand())
+            action = self.choose_play()
+            if action.isnumeric():
+                card = player.play_card(int(action))
+                print("Player play card: " + str(card))
+                if Rules.validate_card(card, self.table.show_last_played_card(), self.table.current_color):
+                    print("Card is valid!")
+                    self.table.play_card(card)
+                    Rules.activate_card_rules(card, player, next_player, self.table)
+                else:
+                    print("Card played is wrong, retry!")
+                    player.add_card(card)
+                    self.play_turn(player, next_player)
+            else:
+                print("Player draw a card!")
+                player.add_card(self.table.draw())
 
-    # Metodo che sceglie la carta d agiocare
     def choose_play(self):
         print("Select your action: 0-n - Play Card, d - Draw card")
         valid_action = False
